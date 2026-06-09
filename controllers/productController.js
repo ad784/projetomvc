@@ -6,10 +6,11 @@
 const Product = require('../models/Product');
 
 /**
- * Exibe a lista de produtos armazenados em memória.
- * @param {Request} req
- * @param {Response} res
+ * Renderiza a pagina de produtos com todos os registros cadastrados.
+ * @param {Request} req - Objeto de requisicao do Express.
+ * @param {Response} res - Objeto de resposta do Express usado para renderizar a view.
  * @returns {void}
+ * @throws {Error} Pode propagar erros inesperados da camada Model durante a leitura.
  */
 function listar(req, res) {
   try {
@@ -21,15 +22,16 @@ function listar(req, res) {
 }
 
 /**
- * Recebe os dados do formulário e cria um novo produto.
- * @param {Request} req
- * @param {Response} res
+ * Recebe os dados enviados pelo formulario e cadastra um novo produto.
+ * @param {Request} req - Requisicao do Express contendo nome e preco em req.body.
+ * @param {Response} res - Resposta do Express usada para redirecionar ou retornar erro.
  * @returns {void}
+ * @throws {Error} Pode receber erros de validacao gerados por Product.add.
  */
 function adicionar(req, res) {
   try {
-    const { nome, preco } = req.body;
-    Product.add({ nome, preco });
+    const { nome, preco, descricao } = req.body;
+    Product.add({ nome, preco, descricao });
     res.redirect('/produtos');
   } catch (error) {
     res.status(400).send(error.message);
@@ -37,10 +39,11 @@ function adicionar(req, res) {
 }
 
 /**
- * Exclui um produto usando o parâmetro de rota id.
- * @param {Request} req
- * @param {Response} res
+ * Remove um produto usando o parametro id informado na rota.
+ * @param {Request} req - Requisicao do Express contendo o identificador em req.params.id.
+ * @param {Response} res - Resposta do Express usada para redirecionar ou retornar erro.
  * @returns {void}
+ * @throws {Error} Pode receber erro caso o produto informado nao exista.
  */
 function excluir(req, res) {
   try {
